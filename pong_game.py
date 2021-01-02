@@ -1,11 +1,20 @@
 # Simple Pong in Python 3 for Beginners
+# Python version 3.9.1
 # by @Maturana
-# Part 1
+# Complete implemenation
 
 import turtle
 import os
 
-# Start Window
+
+# Global Variables
+game_on = True
+
+#Score
+score_a = 0
+score_b = 0
+
+# End of Global Variables
 
 # Main Window
 wn = turtle.Screen()
@@ -13,13 +22,9 @@ wn.title("Pong")
 wn.bgcolor("brown")
 wn.setup(width= 800, height=600)
 wn.tracer(0)
-turtle.hideturtle()
-
-#Score
-score_a = 0
-score_b = 0
 
 # First Layer: Players
+
 #Paddle A
 paddle_a = turtle.Turtle()
 paddle_a.speed(0)
@@ -28,7 +33,6 @@ paddle_a.color("white")
 paddle_a.shapesize(stretch_wid=5,stretch_len=1)
 paddle_a.penup()
 paddle_a.goto(-350,0)
-
 
 #Paddle B
 paddle_b = turtle.Turtle()
@@ -149,16 +153,37 @@ def paddle_b_down():
 	y = paddle_b.ycor()
 	y -= 20
 	paddle_b.sety(y)
+	
+def game_over():
+	banner_ = turtle.Turtle()
+	banner_.speed(0)
+	banner_.shape("square")
+	banner_.color("white")
+	banner_.penup()
+	banner_.hideturtle()
+	banner_.goto(0,0)
+	banner_.write("GAME OVER", align="center", font=("Courier", 52, "normal"))
+
+def score_win(A,B):
+	if A == 10 or B == 10:
+		pen.clear() # clears the pen
+		if A > B:
+			pen.write("Player A: {}".format("Wins"), align="center", font=("Courier", 32, "normal"))
+		else:
+			pen.write("Player B: {}".format("Wins"), align="center", font=("Courier", 32, "normal"))
+		game_over()
 
 # Keyboard bindings
 wn.listen()
+
 wn.onkeypress(paddle_a_up, "w")
 wn.onkeypress(paddle_a_down, "s")
 wn.onkeypress(paddle_b_up, "Up")
 wn.onkeypress(paddle_b_down,"Down")
 # End of Keyboard bindings
 
-while True:
+while game_on:
+	
 	wn.update() # update must be kept in order for the graphics to show
 		
 	# Move the ball
@@ -202,9 +227,9 @@ while True:
 		ball.dx *= -1
 		os.system("afplay bounce.wav&")
 
+	# Displays game over and who wins the game
+	score_win(score_a,score_b)
 	
 	# End of game
-	# Implementation needed
 	
-
 #end of code
