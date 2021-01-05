@@ -1,7 +1,7 @@
 # Simple Pong in Python 3 for Beginners
 # Python version 3.9.1
 # by @Maturana
-# Complete implemenation
+# Part 1
 
 import turtle
 import os
@@ -9,10 +9,6 @@ import os
 
 # Global Variables
 game_on = True
-
-#Score
-score_a = 0
-score_b = 0
 
 # End of Global Variables
 
@@ -153,7 +149,8 @@ def paddle_b_down():
 	y = paddle_b.ycor()
 	y -= 20
 	paddle_b.sety(y)
-	
+
+# Displays game over after Player A or Player B wins
 def game_over():
 	banner_ = turtle.Turtle()
 	banner_.speed(0)
@@ -163,15 +160,18 @@ def game_over():
 	banner_.hideturtle()
 	banner_.goto(0,0)
 	banner_.write("GAME OVER", align="center", font=("Courier", 52, "normal"))
+	ball.setx(50)
+	ball.sety(50)
 
 def score_win(A,B):
-	if A == 10 or B == 10:
+	if A == 2 or B == 2:
 		pen.clear() # clears the pen
 		if A > B:
 			pen.write("Player A: {}".format("Wins"), align="center", font=("Courier", 32, "normal"))
 		else:
 			pen.write("Player B: {}".format("Wins"), align="center", font=("Courier", 32, "normal"))
 		game_over()
+
 
 # Keyboard bindings
 wn.listen()
@@ -182,54 +182,67 @@ wn.onkeypress(paddle_b_up, "Up")
 wn.onkeypress(paddle_b_down,"Down")
 # End of Keyboard bindings
 
-while game_on:
+def main():
 	
-	wn.update() # update must be kept in order for the graphics to show
+	# Score
+	score_a = 0
+	score_b = 0
+	
+	while game_on:
 		
-	# Move the ball
-	ball.setx(ball.xcor() + ball.dx/3) # speed is reduced to 25% by dividing ball.dx/4
-	ball.sety(ball.ycor() + ball.dy/3) # spdee is reduced to 25% by dividing ball.dx/4
+		wn.update() # update must be kept in order for the graphics to show
+			
+		# Move the ball
+		ball.setx(ball.xcor() + ball.dx/3) # speed is reduced to 25% by dividing ball.dx/4
+		ball.sety(ball.ycor() + ball.dy/3) # spdee is reduced to 25% by dividing ball.dx/4
+		
+		# Border checking
+		
+		# Top and bottom
+		if ball.ycor() > 290:
+			ball.sety(290)
+			ball.dy *= -1
+			os.system("afplay bounce.wav&")
 	
-	# Border checking
+		if ball.ycor() < -290:
+			ball.sety(-290)
+			ball.dy *= -1
+			os.system("afplay bounce.wav&")
 	
-	# Top and bottom
-	if ball.ycor() > 290:
-		ball.sety(290)
-		ball.dy *= -1
-		os.system("afplay bounce.wav&")
-
-	if ball.ycor() < -290:
-		ball.sety(-290)
-		ball.dy *= -1
-		os.system("afplay bounce.wav&")
-
-	# Left and right
-	if ball.xcor() > 350:
-		score_a += 1
-		pen.clear()
-		pen.write("Player A: {} Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
-		ball.goto(0,0)
-		ball.dx *= -1
-
-	if ball.xcor() < -350:
-		score_b += 1
-		pen.clear()
-		pen.write("Player A: {} Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
-		ball.goto(0,0)
-		ball.dx *= -1
-
-	# Paddle and ball collisions
-	if ball.xcor() < -340 and ball.ycor() < paddle_a.ycor() + 50 and ball.ycor() > paddle_a.ycor() -50:
-		ball.dx *= -1
-		os.system("afplay bounce.wav&")
-
-	if ball.xcor() > 340 and ball.ycor() < paddle_b.ycor() + 50 and ball.ycor() > paddle_b.ycor() - 50:
-		ball.dx *= -1
-		os.system("afplay bounce.wav&")
-
-	# Displays game over and who wins the game
-	score_win(score_a,score_b)
+		# Left and right
+		if ball.xcor() > 350:
+			score_a += 1
+			pen.clear()
+			pen.write("Player A: {} Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
+			ball.goto(0,0)
+			ball.dx *= -1
 	
-	# End of game
+		if ball.xcor() < -350:
+			score_b += 1
+			pen.clear()
+			pen.write("Player A: {} Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
+			ball.goto(0,0)
+			ball.dx *= -1
+	
+		# Paddle and ball collisions
+		if ball.xcor() < -340 and ball.ycor() < paddle_a.ycor() + 50 and ball.ycor() > paddle_a.ycor() -50:
+			ball.dx *= -1
+			os.system("afplay bounce.wav&")
+	
+		if ball.xcor() > 340 and ball.ycor() < paddle_b.ycor() + 50 and ball.ycor() > paddle_b.ycor() - 50:
+			ball.dx *= -1
+			os.system("afplay bounce.wav&")
+	
+		# Displays game over and who wins the game
+		score_win(score_a,score_b)
+		# End of game
+		
+
+# calling main function
+if __name__ == "__main__":
+
+	main()
+	
+	
 	
 #end of code
