@@ -3,8 +3,12 @@
 # by @Maturana
 # Part 1
 
+
+
 import turtle
 import os
+import logging
+import os.path
 
 
 # Global Variables
@@ -164,7 +168,7 @@ def game_over():
 	ball.sety(50)
 
 def score_win(A,B):
-	if A == 2 or B == 2:
+	if A == 10 or B == 10:
 		pen.clear() # clears the pen
 		if A > B:
 			pen.write("Player A: {}".format("Wins"), align="center", font=("Courier", 32, "normal"))
@@ -173,28 +177,29 @@ def score_win(A,B):
 		game_over()
 
 
-# Keyboard bindings
-wn.listen()
-
-wn.onkeypress(paddle_a_up, "w")
-wn.onkeypress(paddle_a_down, "s")
-wn.onkeypress(paddle_b_up, "Up")
-wn.onkeypress(paddle_b_down,"Down")
-# End of Keyboard bindings
-
-def main():
+def game():
 	
 	# Score
 	score_a = 0
 	score_b = 0
 	
+
+	# Keyboard bindings
+	logging.info(wn.listen())
+
+	wn.onkeypress(paddle_a_up, "w")
+	wn.onkeypress(paddle_a_down, "s")
+	wn.onkeypress(paddle_b_up, "Up")
+	wn.onkeypress(paddle_b_down,"Down")
+	# End of Keyboard bindings
+
 	while game_on:
 		
 		wn.update() # update must be kept in order for the graphics to show
 			
 		# Move the ball
-		ball.setx(ball.xcor() + ball.dx/3) # speed is reduced to 25% by dividing ball.dx/4
-		ball.sety(ball.ycor() + ball.dy/3) # spdee is reduced to 25% by dividing ball.dx/4
+		ball.setx(ball.xcor() + ball.dx/3)# speed is reduced to 25% by dividing ball.dx/4
+		ball.sety(ball.ycor() + ball.dy/3)# spdee is reduced to 25% by dividing ball.dx/4
 		
 		# Border checking
 		
@@ -227,22 +232,42 @@ def main():
 		# Paddle and ball collisions
 		if ball.xcor() < -340 and ball.ycor() < paddle_a.ycor() + 50 and ball.ycor() > paddle_a.ycor() -50:
 			ball.dx *= -1
-			os.system("afplay bounce.wav&")
+			logging.info(os.system("afplay bounce.wav&"))
 	
 		if ball.xcor() > 340 and ball.ycor() < paddle_b.ycor() + 50 and ball.ycor() > paddle_b.ycor() - 50:
 			ball.dx *= -1
-			os.system("afplay bounce.wav&")
+			logging.info(os.system("afplay bounce.wav&"))
 	
 		# Displays game over and who wins the game
 		score_win(score_a,score_b)
 		# End of game
-		
+	# end of log is never called	
+
+# logger is not working propperly	
+def logger(x):
+	# remove file if file exists
+	logging.basicConfig(filename='pong.log',format='%(asctime)s :: %(levelname)s :: %(message)s')
+	
+	"""
+	if os.path.exists('pong.log'):
+		os.remove('pong.log')
+		logging.basicConfig(filename='pong.log',format='%(asctime)s :: %(levelname)s :: %(message)s',level=logging.INFO)
+	# create file if file does not exists
+	if not os.path.exits('pong.log'):
+		logging.basicConfig(filename='pong.log',format='%(asctime)s :: %(levelname)s :: %(message)s',level=logging.INFO)
+	"""
+	logging.info('Log Started')
+	logging.info(x)
+
+def main():	
+
+	logger(game())
+	logging.info("log ended")
 
 # calling main function
 if __name__ == "__main__":
-
-	main()
 	
+	main()	
 	
 	
 #end of code
